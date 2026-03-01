@@ -485,4 +485,4 @@ mcp_mock/
 
 ---
 
-> 💡 **TL;DR:** Este demo muestra que el futuro no es "la agencia tiene IA". Es "el usuario tiene IA, y la agencia le da acceso a su inventario vía MCP para que esa IA trabaje para el usuario". Almundo se vuelve compatible con todos los agentes del mundo sin desarrollar ninguno.
+> 💡 **TL;DR:** Este demo muestra que el futuro no es "la agencia tiene IA". Es "el usuario tiene IA, y la agencia le da acceso a su inventario vía MCP para que esa IA trabaje para el usuario". La agencia de turismo se vuelve compatible con todos los agentes del mundo sin desarrollar ninguno.
