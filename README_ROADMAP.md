@@ -47,7 +47,7 @@ Convertir el mock actual (FastAPI + Gemini + datos random) en un MCP Server comp
 
 ## 🎯 Sprints Detallados
 
-### Sprint 0: Setup & Data Foundation (Día 1)
+### Sprint 0: Setup & Data Foundation 
 **Objetivo:** Tener una DB fake pero consistente que se pueda consultar
 
 #### Tasks:
@@ -77,7 +77,7 @@ turismo-mcp/
 
 ---
 
-### Sprint 1: Core Booking Lifecycle (Días 2-3)
+### Sprint 1: Core Booking Lifecycle 
 **Objetivo:** Implementar el flujo básico: search → hold → confirm
 
 #### Tasks:
@@ -137,7 +137,7 @@ turismo-mcp/
 
 ---
 
-### Sprint 2: Policies & Modifications (Día 4)
+### Sprint 2: Policies & Modifications 
 **Objetivo:** Agregar policies engine y soporte para cambios/cancelaciones
 
 #### Tasks:
@@ -182,7 +182,49 @@ turismo-mcp/
 
 ---
 
-### Sprint 3: MCP Protocol Integration (Días 5-6)
+### Sprint 2.5: Visual Search & Image Similarity 
+**Objetivo:** Permitir búsqueda de hoteles por imagen — el usuario sube una foto y el sistema encuentra hoteles visualmente similares.
+
+#### Tasks:
+- [ ] **2.5.1 - Image embedding generation**
+  - Modelo: CLIP (`openai/clip-vit-base-patch32`) o similar
+  - Al seedear hoteles, generar embedding de cada imagen de hotel
+  - Guardar embeddings en tabla `hotel_images` con columna `vector`
+
+- [ ] **2.5.2 - Similarity search engine**
+  - Opción A (Postgres): extensión `pgvector` con índice HNSW
+  - Opción B (SQLite in-memory): `numpy` + cosine similarity manual
+  - Indexar embeddings para búsqueda rápida
+
+- [ ] **2.5.3 - Upload endpoint**
+  - `POST /api/search-by-image` (multipart/form-data)
+  - User sube foto (JPG/PNG)
+  - Convertir imagen → embedding con CLIP
+  - Buscar top 10 hoteles con embeddings más cercanos (cosine similarity)
+
+- [ ] **2.5.4 - MCP tool `search_hotels_by_image`**
+  - Input: `image_base64` (string)
+  - Decode → generate embedding → similarity search
+  - Output: lista de hoteles rankeados por similitud visual
+
+#### Entregables:
+```
+turismo-mcp/
+├── services/
+│   └── image_search_service.py  # CLIP inference + cosine similarity
+├── routers/
+│   └── image_router.py          # POST /api/search-by-image
+└── models.py                     # +HotelImage (id, hotel_id, vector)
+```
+
+**Definición de Done:**
+- Subís una foto de una habitación con vista al mar y devuelve los 10 hoteles más parecidos visualmente
+- El MCP tool es invocable desde Claude con imagen en base64
+- Tiempo de respuesta < 2 segundos (modelo CLIP corriendo local)
+
+---
+
+### Sprint 3: MCP Protocol Integration 
 **Objetivo:** Exponer todo vía MCP oficial, no solo REST
 
 #### Tasks:
@@ -225,11 +267,11 @@ turismo-mcp/
 **Definición de Done:**
 - Servidor MCP corriendo y escuchando en stdio
 - Claude Desktop puede descubrir y llamar todos los tools
-- Un booking completo funciona end-to-end desde Claude chat
+- Un booking completo funciona end-to-end desde llm chat
 
 ---
 
-### Sprint 4: Observability & Polish (Día 7)
+### Sprint 4: Observability & Polish 
 **Objetivo:** Logging, métricas, docs y demo material
 
 #### Tasks:
@@ -281,9 +323,9 @@ turismo-mcp/
 
 ## 📊 Métricas de Éxito del Proyecto
 
-Al final del roadmap deberías poder:
+Al final del roadmap debería poder:
 
-**✅ Desde Claude Desktop:**
+**✅ Desde ll Desktop:**
 - Buscar vuelos/hoteles en lenguaje natural
 - Crear hold de un vuelo
 - Recibir payment link
